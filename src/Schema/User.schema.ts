@@ -5,7 +5,7 @@ import { userSettings } from './Users.settings.schema';
 @Schema({ timestamps: true, versionKey: false })
 export class User {
   @Prop({ unique: true, trim: true, required: true })
-  userName: string;
+  email: string;
 
   @Prop({ required: false, default: true })
   isActive: boolean;
@@ -13,9 +13,8 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ type:mongoose.Types.ObjectId, ref: 'userSettings' })
+  @Prop({ type: mongoose.Types.ObjectId, ref: 'userSettings' })
   settings: userSettings;
-
 }
 
 export const userSchema = SchemaFactory.createForClass(User);

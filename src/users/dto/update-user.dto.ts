@@ -1,11 +1,13 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
-  @IsString({ message: 'User name must be a string.' })
-  userName?: string;
+  @IsString({ message: 'Email must be a string.' })
+  @IsEmail()
+  @IsString({ message: 'Email must be a string.' })
+  email: string;
 
   @IsOptional()
   @IsBoolean({ message: 'Active status must be true or false.' })

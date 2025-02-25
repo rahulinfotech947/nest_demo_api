@@ -9,9 +9,11 @@ import {
   BadRequestException,
   Query,
   HttpException,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { isValidObjectId } from 'mongoose';
 
@@ -24,9 +26,15 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @HttpCode(HttpStatus.OK)
+  @Post('login')
+  async login(@Body() loginDetails: LoginUserDto) {
+    return await this.usersService.login(loginDetails);
+  }
+
   @Get()
-  findAll(@Query('userName') userName?: string) {
-    console.log('🚀 ~ UsersController ~ findAll ~ userName:', userName);
+  findAll(@Query('email') email?: string) {
+    console.log('🚀 ~ UsersController ~ findAll ~ email:', email);
     return this.usersService.findAll();
   }
 
@@ -34,7 +42,9 @@ export class UsersController {
   async findOne(@Param() params: any) {
     if (!isValidObjectId(params.id))
       throw new BadRequestException({ message: 'Invalid id' });
-    const user = await this.usersService.findOne(params.id).populate("settings")
+    const user = await this.usersService
+      .findOne(params.id)
+      .populate('settings');
     return user ? user : new HttpException('User not found', 404);
   }
 
