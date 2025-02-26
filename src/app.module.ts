@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from '@nestjs/jwt';
+import { CommonModule } from './common/common.module';
 import config from './config/config';
 
 @Module({
@@ -26,6 +27,7 @@ import config from './config/config';
       inject: [ConfigService],
     }),
     UsersModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

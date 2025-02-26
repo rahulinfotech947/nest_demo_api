@@ -4,6 +4,7 @@ import * as morgan from 'morgan';
 import { ValidationPipe } from '@nestjs/common';
 import { MongoDBExceptionFilter } from './mongo-dbexception-filter/mongo-dbexception-filter.filter';
 import { NetworkLoggerMiddleware } from './network-logger/network-logger.middleware';
+import config from './config/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,7 +13,7 @@ async function bootstrap() {
   app.useGlobalFilters(new MongoDBExceptionFilter());
   app.use(new NetworkLoggerMiddleware().use);
   app.enableCors();
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(config().PORT.PORT ?? 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();

@@ -9,10 +9,14 @@ import { User } from 'src/Schema/User.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
+import { CommonService } from 'src/common/common.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private common: CommonService,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const { email, password } = createUserDto;
@@ -38,8 +42,30 @@ export class UsersService {
     if (!isMatch) {
       throw new BadRequestException('Incorrect password');
     }
-    const token = 'erdtfyguhijok;,';
-    return { token };
+    const access_token = await this.common.generateToken({
+      email,
+      userId: isUserExist._id,
+      ROLE: 'ADMIN',
+    });
+    return { access_token, user: isUserExist };
+  }
+
+  async logout(loginUserDto: LoginUserDto) {
+    const { email, password } = loginUserDto;
+    const isUserExist = await this.userModel.findOne({ email });
+    if (!isUserExist) {
+      throw new UnauthorizedException('User not found');
+    }
+    const isMatch = await bcrypt.compare(password, isUserExist.password);
+    if (!isMatch) {
+      throw new BadRequestException('Incorrect password');
+    }
+    const access_token = await this.common.generateToken({
+      email,
+      userId: isUserExist._id,
+      ROLE: 'ADMIN',
+    });
+    return { access_token, user: isUserExist };
   }
 
   findAll() {

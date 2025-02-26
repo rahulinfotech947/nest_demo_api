@@ -8,16 +8,22 @@ import {
   userSettings,
   userSettingsSchema,
 } from 'src/Schema/Users.settings.schema';
+import { CommonService } from 'src/common/common.service';
+import {
+  RefreshToken,
+  RefreshTokenSchema,
+} from 'src/Schema/refresh.token.schema';
 
 const Tables = [
   { name: User.name, schema: userSchema },
   { name: userSettings.name, schema: userSettingsSchema },
+  { name: RefreshToken.name, schema: RefreshTokenSchema },
 ];
 
 @Module({
   imports: [MongooseModule.forFeature(Tables)],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, CommonService],
 })
 export class UsersModule {
   configure(consumer: MiddlewareConsumer) {

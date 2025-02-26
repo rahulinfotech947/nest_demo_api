@@ -2,7 +2,6 @@ import {
   Catch,
   ExceptionFilter,
   ArgumentsHost,
-  HttpException,
   HttpStatus,
 } from '@nestjs/common';
 import * as mongoose from 'mongoose';
