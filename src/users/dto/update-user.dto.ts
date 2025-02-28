@@ -17,3 +17,12 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsString({ message: 'Password must be a string.' })
   password?: string;
 }
+
+export class QueryParamsDto {
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @IsOptional()
+  isActive?: boolean | string;
+}

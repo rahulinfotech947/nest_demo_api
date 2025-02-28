@@ -1,4 +1,8 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { CommonService } from 'src/common/common.service';
 
@@ -8,14 +12,14 @@ export class AuthMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     const token = req.headers['authorization']?.split(' ')[1];
     if (!token) {
-      return res.status(401).json({ message: 'Token is missing or invalid' });
+      throw new UnauthorizedException('Invalid token');
     }
     try {
       const decoded = await this.common.verifyToken(token);
       req['user'] = decoded;
       next();
     } catch (error) {
-      return res.status(401).json({ message: error.message });
+      throw new UnauthorizedException(error.message);
     }
   }
 }

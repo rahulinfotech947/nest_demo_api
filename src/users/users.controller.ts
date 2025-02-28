@@ -11,11 +11,13 @@ import {
   HttpException,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import {  UpdateUserDto } from './dto/update-user.dto';
 import { isValidObjectId } from 'mongoose';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -32,10 +34,10 @@ export class UsersController {
     return await this.usersService.login(loginDetails);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
-  findAll(@Query('email') email?: string) {
-    console.log('🚀 ~ UsersController ~ findAll ~ email:', email);
-    return this.usersService.findAll();
+  findAll(@Query() query?: any) {
+    return this.usersService.findAll(query);
   }
 
   @Get(':id')

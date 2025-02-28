@@ -68,8 +68,22 @@ export class UsersService {
     return { access_token, user: isUserExist };
   }
 
-  findAll() {
-    return this.userModel.find();
+  findAll(query: any) {
+    const obj = {};
+    Object.keys(query).forEach((key) => {
+      if (query[key] === 'true') obj[key] = true;
+      else if (query[key] === 'false') obj[key] = false;
+      else if (!isNaN(query[key])) obj[key] = Number(query[key]);
+      else {
+        obj[key] = { $regex: new RegExp(query[key], 'i') };
+      }
+    });
+    return this.userModel.aggregate([
+      { $match: obj },
+      { $sort: { createdAt: -1 } },
+      // { $group: { _id: '$_id', isActive: { $count: '$isActive' } } },
+      { $unset: ['password'] }, // to remove one key
+    ]);
   }
 
   findOne(id: string) {
